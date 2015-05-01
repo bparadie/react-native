@@ -167,7 +167,6 @@ var Image = React.createClass({
       tintColor: style.tintColor,
     });
     if (isStored) {
-     // aroth: TODO
       nativeProps.imageTag = { uri: source.uri, representation: this.props.representation };
     } else {
       nativeProps.src = source.uri;

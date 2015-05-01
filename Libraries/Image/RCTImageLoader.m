@@ -64,7 +64,6 @@ NSError *errorWithMessage(NSString *message)
           // Also make sure the image is released immediately after it's used so it
           // doesn't spike the memory up during the process.
           @autoreleasepool {
-            // aroth: TODO
             ALAssetRepresentation *representation = [asset defaultRepresentation];
             ALAssetOrientation orientation = [representation orientation];
             UIImage *image;
