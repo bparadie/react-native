@@ -75,6 +75,7 @@ var CameraRollView = React.createClass({
         return (
           <Image
             source={asset.node.image}
+            representation={'thumbnail'}
             style={imageStyle}
           />
         );

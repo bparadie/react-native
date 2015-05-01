@@ -51,7 +51,7 @@ NSError *errorWithMessage(NSString *message)
   return assetsLibrary;
 }
 
-+ (void)loadImageWithTag:(NSString *)imageTag callback:(void (^)(NSError *error, UIImage *image))callback
++ (void)loadImageWithTag:(NSString *)imageTag representation:(NSString *)rep callback:(void (^)(NSError *error, UIImage *image))callback
 {
   if ([imageTag hasPrefix:@"assets-library"]) {
     [[RCTImageLoader assetsLibrary] assetForURL:[NSURL URLWithString:imageTag] resultBlock:^(ALAsset *asset) {
@@ -64,11 +64,24 @@ NSError *errorWithMessage(NSString *message)
           // Also make sure the image is released immediately after it's used so it
           // doesn't spike the memory up during the process.
           @autoreleasepool {
+            // aroth: TODO
             ALAssetRepresentation *representation = [asset defaultRepresentation];
             ALAssetOrientation orientation = [representation orientation];
-            UIImage *image = [UIImage imageWithCGImage:[representation fullResolutionImage] scale:1.0f orientation:(UIImageOrientation)orientation];
-            callback(nil, image);
+            UIImage *image;
+            
+            if( [rep isEqualToString:@"screen"] ){
+              image = [UIImage imageWithCGImage:[representation fullScreenImage] scale:1.0f orientation:(UIImageOrientation)orientation];
+            }else if( [rep isEqualToString:@"thumbnail"] ){
+              image = [UIImage imageWithCGImage:[asset thumbnail] scale:1.0f orientation:(UIImageOrientation)orientation];
+            }else{
+              image = [UIImage imageWithCGImage:[representation fullResolutionImage] scale:1.0f orientation:(UIImageOrientation)orientation];
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+              callback(nil, image);
+            });
           }
+          
         });
       } else {
         NSString *errorText = [NSString stringWithFormat:@"Failed to load asset at URL %@ with no error message.", imageTag];
