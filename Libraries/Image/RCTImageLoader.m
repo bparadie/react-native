@@ -66,16 +66,7 @@ NSError *errorWithMessage(NSString *message)
           @autoreleasepool {
             ALAssetRepresentation *representation = [asset defaultRepresentation];
             ALAssetOrientation orientation = [representation orientation];
-            UIImage *image;
-            
-            if( [rep isEqualToString:@"screen"] ){
-              image = [UIImage imageWithCGImage:[representation fullScreenImage] scale:1.0f orientation:(UIImageOrientation)orientation];
-            }else if( [rep isEqualToString:@"thumbnail"] ){
-              image = [UIImage imageWithCGImage:[asset thumbnail] scale:1.0f orientation:(UIImageOrientation)orientation];
-            }else{
-              image = [UIImage imageWithCGImage:[representation fullResolutionImage] scale:1.0f orientation:(UIImageOrientation)orientation];
-            }
-            
+            UIImage *image = [UIImage imageWithCGImage:[representation fullResolutionImage] scale:1.0f orientation:(UIImageOrientation)orientation];
             dispatch_async(dispatch_get_main_queue(), ^{
               callback(nil, image);
             });
