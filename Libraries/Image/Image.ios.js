@@ -65,6 +65,15 @@ var Image = React.createClass({
     source: PropTypes.shape({
       uri: PropTypes.string,
     }),
+    
+    /**
+     * Static Image (ALAsset) representation
+     *    full      -> full resolution
+     *    screen    -> full screen 
+     *    thumbnail -> thumbnail 
+     */
+     representation: PropTypes.oneOf(['full', 'screen', 'thumbnail']),
+     
     /**
      * A static image to display while downloading the final image off the
      * network.
@@ -157,7 +166,7 @@ var Image = React.createClass({
       tintColor: style.tintColor,
     });
     if (isStored) {
-      nativeProps.imageTag = source.uri;
+      nativeProps.imageTag = { uri: source.uri, representation: this.props.representation };
     } else {
       nativeProps.src = source.uri;
     }
