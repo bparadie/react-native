@@ -255,7 +255,7 @@
 		14F484551AABFCE100FDF6B9 /* RCTSliderManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTSliderManager.m; sourceTree = "<group>"; };
 		14F4D3891AE1B7E40049C042 /* RCTProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTProfile.h; sourceTree = "<group>"; };
 		14F4D38A1AE1B7E40049C042 /* RCTProfile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTProfile.m; sourceTree = "<group>"; };
-		4CF4D68E1B16678200877BB8 /* libReact copy.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libReact copy.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4CF4D68E1B16678200877BB8 /* libReact-NoPackager.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libReact-NoPackager.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		58114A121AAE854800E7D092 /* RCTPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTPicker.h; sourceTree = "<group>"; };
 		58114A131AAE854800E7D092 /* RCTPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTPicker.m; sourceTree = "<group>"; };
 		58114A141AAE854800E7D092 /* RCTPickerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTPickerManager.h; sourceTree = "<group>"; };
@@ -446,7 +446,7 @@
 			isa = PBXGroup;
 			children = (
 				83CBBA2E1A601D0E00E9B192 /* libReact.a */,
-				4CF4D68E1B16678200877BB8 /* libReact copy.a */,
+				4CF4D68E1B16678200877BB8 /* libReact-NoPackager.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -526,7 +526,7 @@
 			);
 			name = "React-NoPackager";
 			productName = React;
-			productReference = 4CF4D68E1B16678200877BB8 /* libReact copy.a */;
+			productReference = 4CF4D68E1B16678200877BB8 /* libReact-NoPackager.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		83CBBA2D1A601D0E00E9B192 /* React */ = {
@@ -747,7 +747,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "React copy";
+				PRODUCT_NAME = "React-NoPackager";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SKIP_INSTALL = YES;
 			};
@@ -764,7 +764,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "React copy";
+				PRODUCT_NAME = "React-NoPackager";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SKIP_INSTALL = YES;
 			};
