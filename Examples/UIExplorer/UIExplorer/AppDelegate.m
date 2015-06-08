@@ -36,7 +36,23 @@
    * on the same Wi-Fi network.
    */
 
-  jsCodeLocation = [NSURL URLWithString:@"http://localhost:8081/Examples/UIExplorer/UIExplorerApp.includeRequire.runModule.bundle?dev=true"];
+  NSMutableString* url;
+  NSDictionary *dict = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"RCTWebSocketExecutor"];
+  if( dict )
+  {
+    NSString* origin = [dict objectForKey:@"origin"];
+    NSString* port = [NSString stringWithFormat:@"%@", [dict objectForKey:@"port"]]; ;
+    url = [NSMutableString stringWithString:origin];
+    [url appendString:@":"];
+    [url appendString:port];
+  }
+  else
+  {
+    url = [NSMutableString stringWithString:@"http://localhost:8081"];
+  }
+  [url appendString:@"/Examples/UIExplorer/UIExplorerApp.includeRequire.runModule.bundle?dev=true"];
+  
+  jsCodeLocation = [NSURL URLWithString:url];
 
   /**
    * OPTION 2

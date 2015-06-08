@@ -35,7 +35,23 @@ typedef void (^RCTWSMessageCallback)(NSError *error, NSDictionary *reply);
 
 - (instancetype)init
 {
-  return [self initWithURL:[NSURL URLWithString:@"http://localhost:8081/debugger-proxy"]];
+  NSMutableString* url;
+  NSDictionary *dict = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"RCTWebSocketExecutor"];
+  if( dict )
+  {
+    NSString* origin = [dict objectForKey:@"origin"];
+    NSString* port = [NSString stringWithFormat:@"%@", [dict objectForKey:@"port"]]; ;
+    url = [NSMutableString stringWithString:origin];
+    [url appendString:@":"];
+    [url appendString:port];
+  }
+  else
+  {
+    url = [NSMutableString stringWithString:@"http://localhost:8081"];
+  }
+  [url appendString:@"/debugger-proxy"];
+    
+  return [self initWithURL:[NSURL URLWithString:url]];
 }
 
 - (instancetype)initWithURL:(NSURL *)URL

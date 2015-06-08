@@ -34,6 +34,10 @@ var parseCommandLine = require('./parseCommandLine.js');
 var webSocketProxy = require('./webSocketProxy.js');
 
 var options = parseCommandLine([{
+  command: 'origin',
+  default: 'http://localhost',
+  type: 'string',
+}, {
   command: 'port',
   default: 8081,
   type: 'string',
@@ -169,7 +173,7 @@ function getDevToolsLauncher(options) {
       res.writeHead(200, {'Content-Type': 'text/html'});
       fs.createReadStream(debuggerPath).pipe(res);
     } else if (req.url === '/launch-chrome-devtools') {
-      var debuggerURL = 'http://localhost:' + options.port + '/debugger-ui';
+      var debuggerURL = options.origin + ':' + options.port + '/debugger-ui';
       var script = 'launchChromeDevTools.applescript';
       console.log('Launching Dev Tools...');
       execFile(path.join(__dirname, script), [debuggerURL], function(err, stdout, stderr) {

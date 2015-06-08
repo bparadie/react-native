@@ -38,7 +38,24 @@
 #if RUNNING_ON_CI
     _scriptURL = [[NSBundle bundleForClass:[RCTBridge class]] URLForResource:@"main" withExtension:@"jsbundle"];
 #else
-    _scriptURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://localhost:8081/%@.includeRequire.runModule.bundle?dev=true", app]];
+    
+    NSMutableString* url;
+    NSDictionary *dict = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"RCTWebSocketExecutor"];
+    if( dict )
+    {
+      NSString* origin = [dict objectForKey:@"origin"];
+      NSString* port = [NSString stringWithFormat:@"%@", [dict objectForKey:@"port"]]; ;
+      url = [NSMutableString stringWithString:origin];
+      [url appendString:@":"];
+      [url appendString:port];
+    }
+    else
+    {
+      url = [NSMutableString stringWithString:@"http://localhost:8081"];
+    }
+    [url appendString:[NSString stringWithFormat:@"/%@.includeRequire.runModule.bundle?dev=true", app]];
+    
+    _scriptURL = [NSURL URLWithString:url];
 #endif
   }
   return self;
