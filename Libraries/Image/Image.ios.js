@@ -18,7 +18,7 @@ var NativeMethodsMixin = require('NativeMethodsMixin');
 var NativeModules = require('NativeModules');
 var PropTypes = require('ReactPropTypes');
 var React = require('React');
-var ReactIOSViewAttributes = require('ReactIOSViewAttributes');
+var ReactNativeViewAttributes = require('ReactNativeViewAttributes');
 var StyleSheet = require('StyleSheet');
 var StyleSheetPropType = require('StyleSheetPropType');
 
@@ -60,20 +60,11 @@ var Image = React.createClass({
     /**
      * `uri` is a string representing the resource identifier for the image, which
      * could be an http address, a local file path, or the name of a static image
-     * resource (which should be wrapped in the `required('image!name')` function).
+     * resource (which should be wrapped in the `require('image!name')` function).
      */
     source: PropTypes.shape({
       uri: PropTypes.string,
     }),
-    
-    /**
-     * Static Image (ALAsset) representation
-     *    full      -> full resolution
-     *    screen    -> full screen 
-     *    thumbnail -> thumbnail 
-     */
-     representation: PropTypes.oneOf(['full', 'screen', 'thumbnail']),
-     
     /**
      * A static image to display while downloading the final image off the
      * network.
@@ -108,6 +99,12 @@ var Image = React.createClass({
      * testing scripts.
      */
     testID: PropTypes.string,
+    /**
+     * Invoked on mount and layout changes with
+     *
+     *   {nativeEvent: { layout: {x, y, width, height}}}.
+     */
+     onLayout: PropTypes.func,
   },
 
   statics: {
@@ -122,7 +119,7 @@ var Image = React.createClass({
    */
   viewConfig: {
     uiViewClassName: 'UIView',
-    validAttributes: ReactIOSViewAttributes.UIView
+    validAttributes: ReactNativeViewAttributes.UIView
   },
 
   render: function() {
@@ -149,24 +146,15 @@ var Image = React.createClass({
     if (this.props.style && this.props.style.tintColor) {
       warning(RawImage === RCTStaticImage, 'tintColor style only supported on static images.');
     }
-    var resizeMode = this.props.resizeMode || style.resizeMode;
-    var contentModes = NativeModules.UIManager.UIView.ContentMode;
-    var contentMode;
-    if (resizeMode === ImageResizeMode.stretch) {
-      contentMode = contentModes.ScaleToFill;
-    } else if (resizeMode === ImageResizeMode.contain) {
-      contentMode = contentModes.ScaleAspectFit;
-    } else { // ImageResizeMode.cover or undefined
-      contentMode = contentModes.ScaleAspectFill;
-    }
+    var resizeMode = this.props.resizeMode || style.resizeMode || 'cover';
 
     var nativeProps = merge(this.props, {
       style,
-      contentMode,
+      resizeMode,
       tintColor: style.tintColor,
     });
     if (isStored) {
-      nativeProps.imageTag = { uri: source.uri, representation: this.props.representation };
+      nativeProps.imageTag = source.uri;
     } else {
       nativeProps.src = source.uri;
     }
@@ -190,7 +178,7 @@ var nativeOnlyProps = {
   src: true,
   defaultImageSrc: true,
   imageTag: true,
-  contentMode: true,
+  resizeMode: true,
 };
 if (__DEV__) {
   verifyPropTypes(Image, RCTStaticImage.viewConfig, nativeOnlyProps);

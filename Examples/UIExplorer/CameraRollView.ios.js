@@ -86,7 +86,6 @@ var CameraRollView = React.createClass({
         return (
           <Image
             source={asset.node.image}
-            representation={'thumbnail'}
             style={imageStyle}
           />
         );
@@ -138,7 +137,7 @@ var CameraRollView = React.createClass({
     var fetchParams: Object = {
       first: this.props.batchSize,
       groupTypes: this.props.groupTypes,
-      assetType: this.props.assetType
+      assetType: this.props.assetType,
     };
     if (this.state.lastCursor) {
       fetchParams.after = this.state.lastCursor;

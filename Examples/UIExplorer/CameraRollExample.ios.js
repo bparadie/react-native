@@ -72,7 +72,6 @@ var CameraRollExample = React.createClass({
         <Image
           source={asset.node.image}
           style={imageStyle}
-          representation={'thumbnail'}
         />
         <View style={styles.info}>
           <Text style={styles.url}>{asset.node.image.uri}</Text>

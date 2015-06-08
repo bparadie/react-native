@@ -18,6 +18,8 @@
 // Utility functions for JSON object <-> string serialization/deserialization
 RCT_EXTERN NSString *RCTJSONStringify(id jsonObject, NSError **error);
 RCT_EXTERN id RCTJSONParse(NSString *jsonString, NSError **error);
+RCT_EXTERN id RCTJSONParseMutable(NSString *jsonString, NSError **error);
+RCT_EXTERN id RCTJSONParseWithOptions(NSString *jsonString, NSError **error, NSJSONReadingOptions options);
 
 // Strip non JSON-safe values from an object graph
 RCT_EXTERN id RCTJSONClean(id object);
@@ -52,3 +54,6 @@ RCT_EXTERN NSDictionary *RCTMakeAndLogError(NSString *message, id toStringify, N
 
 // Returns YES if React is running in a test environment
 RCT_EXTERN BOOL RCTRunningInTestEnvironment(void);
+
+// Return YES if image has an alpha component
+RCT_EXTERN BOOL RCTImageHasAlpha(CGImageRef image);

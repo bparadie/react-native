@@ -25,7 +25,7 @@ RCT_EXPORT_METHOD(saveImageWithTag:(NSString *)imageTag
                   successCallback:(RCTResponseSenderBlock)successCallback
                   errorCallback:(RCTResponseSenderBlock)errorCallback)
 {
-  [RCTImageLoader loadImageWithTag:imageTag representation:@"full" callback:^(NSError *loadError, UIImage *loadedImage) {
+  [RCTImageLoader loadImageWithTag:imageTag callback:^(NSError *loadError, UIImage *loadedImage) {
     if (loadError) {
       errorCallback(@[[loadError localizedDescription]]);
       return;
@@ -87,7 +87,7 @@ RCT_EXPORT_METHOD(getPhotos:(NSDictionary *)params
   } else {
     groupTypes = ALAssetsGroupSavedPhotos;
   }
-  
+
   BOOL __block foundAfter = NO;
   BOOL __block hasNextPage = NO;
   BOOL __block calledCallback = NO;
@@ -95,7 +95,7 @@ RCT_EXPORT_METHOD(getPhotos:(NSDictionary *)params
 
   [[RCTImageLoader assetsLibrary] enumerateGroupsWithTypes:groupTypes usingBlock:^(ALAssetsGroup *group, BOOL *stopGroups) {
     if (group && (groupName == nil || [groupName isEqualToString:[group valueForProperty:ALAssetsGroupPropertyName]])) {
-      
+
       if (assetType == nil || [assetType isEqualToString:@"Photos"]) {
         [group setAssetsFilter:ALAssetsFilter.allPhotos];
       } else if ([assetType isEqualToString:@"Videos"]) {

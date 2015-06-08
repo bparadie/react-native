@@ -105,6 +105,9 @@ var getPhotosReturnChecker = createStrictShapeTypeChecker({
 });
 
 class CameraRoll {
+
+  static GroupTypesOptions: Array<string>;
+  static AssetTypeOptions: Array<string>;
   /**
    * Saves the image with tag `tag` to the camera roll.
    *

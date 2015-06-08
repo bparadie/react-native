@@ -21,6 +21,8 @@ void RCTLogConvertError(id json, const char *type)
               json, [json classForCoder], type);
 }
 
+RCT_CONVERTER(id, id, self)
+
 RCT_CONVERTER(BOOL, BOOL, boolValue)
 RCT_NUMBER_CONVERTER(double, doubleValue)
 RCT_NUMBER_CONVERTER(float, floatValue)
@@ -175,6 +177,22 @@ NSNumber *RCTConvertEnumValue(const char *typeName, NSDictionary *mapping, NSNum
   return value ?: defaultValue;
 }
 
+NSNumber *RCTConvertMultiEnumValue(const char *typeName, NSDictionary *mapping, NSNumber *defaultValue, id json)
+{
+  if ([json isKindOfClass:[NSArray class]]) {
+    if ([json count] == 0) {
+      return defaultValue;
+    }
+    long long result = 0;
+    for (id arrayElement in json) {
+      NSNumber *value = RCTConvertEnumValue(typeName, mapping, defaultValue, arrayElement);
+      result |= [value longLongValue];
+    }
+    return @(result);
+  }
+  return RCTConvertEnumValue(typeName, mapping, defaultValue, json);
+}
+
 RCT_ENUM_CONVERTER(NSTextAlignment, (@{
   @"auto": @(NSTextAlignmentNatural),
   @"left": @(NSTextAlignmentLeft),
@@ -203,12 +221,6 @@ RCT_ENUM_CONVERTER(UITextFieldViewMode, (@{
   @"always": @(UITextFieldViewModeAlways),
 }), UITextFieldViewModeNever, integerValue)
 
-RCT_ENUM_CONVERTER(UIScrollViewKeyboardDismissMode, (@{
-  @"none": @(UIScrollViewKeyboardDismissModeNone),
-  @"on-drag": @(UIScrollViewKeyboardDismissModeOnDrag),
-  @"interactive": @(UIScrollViewKeyboardDismissModeInteractive),
-}), UIScrollViewKeyboardDismissModeNone, integerValue)
-
 RCT_ENUM_CONVERTER(UIKeyboardType, (@{
   @"default": @(UIKeyboardTypeDefault),
   @"ascii-capable": @(UIKeyboardTypeASCIICapable),
@@ -221,6 +233,8 @@ RCT_ENUM_CONVERTER(UIKeyboardType, (@{
   @"decimal-pad": @(UIKeyboardTypeDecimalPad),
   @"twitter": @(UIKeyboardTypeTwitter),
   @"web-search": @(UIKeyboardTypeWebSearch),
+  // Added for Android compatibility
+  @"numeric": @(UIKeyboardTypeDecimalPad),
 }), UIKeyboardTypeDefault, integerValue)
 
 RCT_ENUM_CONVERTER(UIReturnKeyType, (@{
@@ -251,7 +265,11 @@ RCT_ENUM_CONVERTER(UIViewContentMode, (@{
   @"top-right": @(UIViewContentModeTopRight),
   @"bottom-left": @(UIViewContentModeBottomLeft),
   @"bottom-right": @(UIViewContentModeBottomRight),
-}), UIViewContentModeScaleToFill, integerValue)
+  // Cross-platform values
+  @"cover": @(UIViewContentModeScaleAspectFill),
+  @"contain": @(UIViewContentModeScaleAspectFit),
+  @"stretch": @(UIViewContentModeScaleToFill),
+}), UIViewContentModeScaleAspectFill, integerValue)
 
 RCT_ENUM_CONVERTER(UIBarStyle, (@{
   @"default": @(UIBarStyleDefault),
@@ -900,10 +918,10 @@ static id RCTConvertPropertyListValue(id json)
   return RCTConvertPropertyListValue(json);
 }
 
-RCT_ENUM_CONVERTER(css_overflow, (@{
-  @"hidden": @NO,
-  @"visible": @YES
-}), YES, boolValue)
+RCT_ENUM_CONVERTER(css_clip_t, (@{
+  @"hidden": @YES,
+  @"visible": @NO
+}), NO, boolValue)
 
 RCT_ENUM_CONVERTER(css_flex_direction_t, (@{
   @"row": @(CSS_FLEX_DIRECTION_ROW),

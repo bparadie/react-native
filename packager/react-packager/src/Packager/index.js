@@ -86,6 +86,7 @@ function Packager(options) {
     moduleFormat: opts.moduleFormat,
     assetRoots: opts.assetRoots,
     fileWatcher: opts.fileWatcher,
+    assetExts: opts.assetExts,
   });
 
   this._transformer = new Transformer({
@@ -165,6 +166,7 @@ Packager.prototype._transformModule = function(ppackage, module) {
       map: transformed.map,
       sourceCode: transformed.sourceCode,
       sourcePath: transformed.sourcePath,
+      virtual: transformed.virtual,
     });
   });
 };

@@ -23,6 +23,8 @@
  */
 @interface RCTConvert : NSObject
 
++ (id)id:(id)json;
+
 + (BOOL)BOOL:(id)json;
 + (double)double:(id)json;
 + (float)float:(id)json;
@@ -52,7 +54,6 @@
 + (NSWritingDirection)NSWritingDirection:(id)json;
 + (UITextAutocapitalizationType)UITextAutocapitalizationType:(id)json;
 + (UITextFieldViewMode)UITextFieldViewMode:(id)json;
-+ (UIScrollViewKeyboardDismissMode)UIScrollViewKeyboardDismissMode:(id)json;
 + (UIKeyboardType)UIKeyboardType:(id)json;
 + (UIReturnKeyType)UIReturnKeyType:(id)json;
 
@@ -109,8 +110,8 @@ typedef NSArray CGColorArray;
 typedef id NSPropertyList;
 + (NSPropertyList)NSPropertyList:(id)json;
 
-typedef BOOL css_overflow;
-+ (css_overflow)css_overflow:(id)json;
+typedef BOOL css_clip_t;
++ (css_clip_t)css_clip_t:(id)json;
 + (css_flex_direction_t)css_flex_direction_t:(id)json;
 + (css_justify_t)css_justify_t:(id)json;
 + (css_align_t)css_align_t:(id)json;
@@ -141,6 +142,7 @@ RCT_EXTERN BOOL RCTCopyProperty(id target, id source, NSString *keyPath);
  * Underlying implementations of RCT_XXX_CONVERTER macros. Ignore these.
  */
 RCT_EXTERN NSNumber *RCTConvertEnumValue(const char *, NSDictionary *, NSNumber *, id);
+RCT_EXTERN NSNumber *RCTConvertMultiEnumValue(const char *, NSDictionary *, NSNumber *, id);
 RCT_EXTERN NSArray *RCTConvertArrayValue(SEL, id);
 RCT_EXTERN void RCTLogConvertError(id, const char *);
 
@@ -192,6 +194,21 @@ RCT_CUSTOM_CONVERTER(type, type, [[self NSNumber:json] getter])
     mapping = values;                                     \
   });                                                     \
   return [RCTConvertEnumValue(#type, mapping, @(default), json) getter]; \
+}
+
+/**
+ * This macro is used for creating converters for enum types for
+ * multiple enum values combined with | operator
+ */
+#define RCT_MULTI_ENUM_CONVERTER(type, values, default, getter) \
++ (type)type:(id)json                                     \
+{                                                         \
+  static NSDictionary *mapping;                           \
+  static dispatch_once_t onceToken;                       \
+  dispatch_once(&onceToken, ^{                            \
+    mapping = values;                                     \
+  });                                                     \
+  return [RCTConvertMultiEnumValue(#type, mapping, @(default), json) getter]; \
 }
 
 /**

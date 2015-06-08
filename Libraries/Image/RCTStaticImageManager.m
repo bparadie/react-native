@@ -26,16 +26,18 @@ RCT_EXPORT_MODULE()
 }
 
 RCT_EXPORT_VIEW_PROPERTY(capInsets, UIEdgeInsets)
-RCT_EXPORT_VIEW_PROPERTY(contentMode, UIViewContentMode)
+RCT_REMAP_VIEW_PROPERTY(resizeMode, contentMode, UIViewContentMode)
 RCT_CUSTOM_VIEW_PROPERTY(src, NSURL, RCTStaticImage)
 {
   if (json) {
     if ([[[json description] pathExtension] caseInsensitiveCompare:@"gif"] == NSOrderedSame) {
       [view.layer addAnimation:RCTGIFImageWithFileURL([RCTConvert NSURL:json]) forKey:@"contents"];
     } else {
+      [view.layer removeAnimationForKey:@"contents"];
       view.image = [RCTConvert UIImage:json];
     }
   } else {
+    [view.layer removeAnimationForKey:@"contents"];
     view.image = defaultView.image;
   }
 }
@@ -49,16 +51,22 @@ RCT_CUSTOM_VIEW_PROPERTY(tintColor, UIColor, RCTStaticImage)
     view.tintColor = defaultView.tintColor;
   }
 }
-RCT_CUSTOM_VIEW_PROPERTY(imageTag, NSDictionary, RCTStaticImage)
+RCT_CUSTOM_VIEW_PROPERTY(imageTag, NSString, RCTStaticImage)
 {
   if (json) {
-    [RCTImageLoader loadImageWithTag:[RCTConvert NSString:json[@"uri"]] representation:[RCTConvert NSString:json[@"representation"]] callback:^(NSError *error, UIImage *image) {
+    [RCTImageLoader loadImageWithTag:[RCTConvert NSString:json] callback:^(NSError *error, id image) {
       if (error) {
         RCTLogWarn(@"%@", error.localizedDescription);
       }
-      view.image = image;
+      if ([image isKindOfClass:[CAAnimation class]]) {
+        [view.layer addAnimation:image forKey:@"contents"];
+      } else {
+        [view.layer removeAnimationForKey:@"contents"];
+        view.image = image;
+      }
     }];
   } else {
+    [view.layer removeAnimationForKey:@"contents"];
     view.image = defaultView.image;
   }
 }

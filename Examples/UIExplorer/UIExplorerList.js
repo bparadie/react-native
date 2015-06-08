@@ -30,6 +30,8 @@ var {
 var { TestModule } = React.addons;
 var Settings = require('Settings');
 
+import type { ExampleModule } from 'ExampleTypes';
+
 var createExamplePage = require('./createExamplePage');
 
 var COMPONENTS = [
@@ -43,6 +45,7 @@ var COMPONENTS = [
   require('./NavigatorIOSColorsExample'),
   require('./NavigatorIOSExample'),
   require('./PickerIOSExample'),
+  require('./ProgressViewIOSExample'),
   require('./ScrollViewExample'),
   require('./SegmentedControlIOSExample'),
   require('./SliderIOSExample'),
@@ -56,6 +59,7 @@ var COMPONENTS = [
 ];
 
 var APIS = [
+  require('./AccessibilityIOSExample'),
   require('./ActionSheetIOSExample'),
   require('./AdSupportIOSExample'),
   require('./AlertIOSExample'),
@@ -107,9 +111,17 @@ COMPONENTS.concat(APIS).forEach((Example) => {
   }
 });
 
-class UIExplorerList extends React.Component {
+type Props = {
+  navigator: Array<{title: string, component: ReactClass<any,any,any>}>,
+  onExternalExampleRequested: Function,
+};
 
-  constructor(props) {
+
+
+class UIExplorerList extends React.Component {
+  props: Props;
+
+  constructor(props: Props) {
     super(props);
     this.state = {
       dataSource: ds.cloneWithRowsAndSections({
@@ -143,13 +155,15 @@ class UIExplorerList extends React.Component {
           dataSource={this.state.dataSource}
           renderRow={this._renderRow.bind(this)}
           renderSectionHeader={this._renderSectionHeader}
+          keyboardShouldPersistTaps={true}
           automaticallyAdjustContentInsets={false}
+          keyboardDismissMode="on-drag"
         />
       </View>
     );
   }
 
-  _renderSectionHeader(data, section) {
+  _renderSectionHeader(data: any, section: string) {
     return (
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionHeaderTitle}>
@@ -159,7 +173,7 @@ class UIExplorerList extends React.Component {
     );
   }
 
-  _renderRow(example, i) {
+  _renderRow(example: ExampleModule, i: number) {
     return (
       <View key={i}>
         <TouchableHighlight onPress={() => this._onPressRow(example)}>
@@ -177,7 +191,7 @@ class UIExplorerList extends React.Component {
     );
   }
 
-  _search(text) {
+  _search(text: mixed) {
     var regex = new RegExp(text, 'i');
     var filter = (component) => regex.test(component.title);
 
@@ -191,7 +205,7 @@ class UIExplorerList extends React.Component {
     Settings.set({searchText: text});
   }
 
-  _onPressRow(example) {
+  _onPressRow(example: ExampleModule) {
     if (example.external) {
       this.props.onExternalExampleRequested(example);
       return;
